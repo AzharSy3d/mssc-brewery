@@ -1,7 +1,9 @@
-package com.azharuworld.msscbrewery.web.controller;
+package com.azharuworld.msscbrewery.web.controller.v2;
 
 import com.azharuworld.msscbrewery.services.BeerService;
+import com.azharuworld.msscbrewery.services.v2.BeerServiceV2;
 import com.azharuworld.msscbrewery.web.model.BeerDto;
+import com.azharuworld.msscbrewery.web.model.v2.BeerDtoV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,26 +12,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Deprecated
-@RequestMapping("/api/v1/beer")
+@RequestMapping("/api/v2/beer")
 @RestController
-public class BeerController {
+public class BeerControllerV2 {
 
-    private final BeerService beerService;
+    private final BeerServiceV2 beerServiceV2;
 
-    @Autowired
-    public BeerController(BeerService beerService) {
-        this.beerService = beerService;
+    public BeerControllerV2(BeerServiceV2 beerServiceV2) {
+        this.beerServiceV2 = beerServiceV2;
     }
 
+
     @GetMapping("/{beerId}")
-    public ResponseEntity<BeerDto> getBeer(@PathVariable UUID beerId){
-        return new ResponseEntity<>(beerService.getBeerById(beerId), HttpStatus.OK);
+    public ResponseEntity<BeerDtoV2> getBeer(@PathVariable UUID beerId){
+        return new ResponseEntity<BeerDtoV2>(beerServiceV2.getBeerById(beerId), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<BeerDto> handlePost(BeerDto beerDto){
-        BeerDto savedBeerDto = beerService.saveNewBeer(beerDto);
+    public ResponseEntity<BeerDto> handlePost(BeerDtoV2 beerDtoV2){
+        BeerDtoV2 savedBeerDto = beerServiceV2.saveNewBeer(beerDtoV2);
 
         HttpHeaders headers = new HttpHeaders();
         //todo add url host name
@@ -40,7 +41,7 @@ public class BeerController {
 
     @PutMapping("/{beerId}")
     public  ResponseEntity handleUpdate(@PathVariable UUID beerId, BeerDto beerDto){
-        beerService.updateBeer(beerId,beerDto);
+        beerServiceV2.updateBeer(beerId,beerDto);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
@@ -48,8 +49,9 @@ public class BeerController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBeer(@PathVariable UUID beerId)
     {
-        beerService.deleteBeerById(beerId);
+        beerServiceV2.deleteBeerById(beerId);
     }
+
 
 
 
